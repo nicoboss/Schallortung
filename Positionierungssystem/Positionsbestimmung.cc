@@ -191,10 +191,15 @@ void main(void)
     {
         for(PiezoNr=0;PiezoNr<2;PiezoNr++)
         {
+            if(Timer[PiezoNr]!=0)
+            {
+                continue;
+            }
+
             ADC_Set(ADC_VREF_VCC,PiezoNr);
             ADC[PiezoNr]=ADC_Read();
 
-            Str_Printf(str_Temp, "ADC:%.4f", ADC[PiezoNr]);
+            Str_Printf(str_Temp, "ADC:%4u", ADC[PiezoNr]);
             LCD_Text("Messung:",str_Temp);
             Msg_WriteInt(ADC[PiezoNr]);
             Msg_WriteChar(13);
@@ -206,6 +211,8 @@ void main(void)
                     Timer[PiezoNr]=millisecs-Startzeit[1];
                     b=Timer[1];
                     c=Timer[2];
+
+                    BEEPTS(43.6645);
 
                     //Rechnung
                     A=4*(c*c)*(y2*x2)+4*(b*b)*(x3*x3)-4*(y2*y2)*(x3*x3);
@@ -221,19 +228,41 @@ void main(void)
 
                     r=(-B+D)/(2*A);
 
+                    x=0;
+                    y=0;
+
                     x=(2*r*c+(c*c)-(x3*x3))/-2*(x3*x3*x3);
                     y=(2*r*b+(b*b)-(y3*y3))/-2*(y3*y3*y3);
 
 
                     //Ausgabe
-                    Str_Printf(x_Display, "x: %.6f", x);
-                    Str_Printf(y_Display, "y: %.6f", y);
-                    LCD_Text(x_Display,y_Display);
-                    Str_Printf(str_Temp, "1:%.5f  2:%.5f", b,c);
+                    Str_Printf(x_Display, "x:%05.2f", x);
+                    Str_Printf(y_Display, "y:%05.2f", y);
+                    LCD_Text(x_Display, y_Display);
+                    Str_Printf(str_Temp, "1:%05.3f  2:%05.3f", b,c);
                     I2C_LCD("Zeitdefferenzen:", str_Temp);
+
+                    PiezoNr=0;
+
+                    ADC[0]=0;
+                    ADC[1]=0;
+                    ADC[2]=0;
 
                     Sygnal[0]=false;
                     Sygnal[1]=false;
+
+                    Startzeit[0]=0;
+                    Startzeit[1]=0;
+
+                    Timer[0]=0;
+                    Timer[1]=0;
+                    Timer[2]=0;
+
+                    AbsDelay(100);
+
+                    while(Key_Scan()==0);
+                    BEEPTS(43.6645);
+                    break;
 
                 } else if (Sygnal[0]==true){
                     Timer[PiezoNr]=millisecs-Startzeit[0];
