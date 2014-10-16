@@ -189,22 +189,24 @@ void main(void)
 
     while(true)
     {
-        for(PiezoNr=0;PiezoNr<2;PiezoNr++)
+        for(PiezoNr=0;PiezoNr<3;PiezoNr++)
         {
             if(Timer[PiezoNr]!=0)
             {
                 continue;
             }
 
-            ADC_Set(ADC_VREF_VCC,PiezoNr);
+            ADC_Set(ADC_VREF_BG, PiezoNr);
             ADC[PiezoNr]=ADC_Read();
 
             Str_Printf(str_Temp, "ADC:%4u", ADC[PiezoNr]);
             LCD_Text("Messung:",str_Temp);
+            Msg_WriteChar(13);
             Msg_WriteInt(ADC[PiezoNr]);
             Msg_WriteChar(13);
+            Msg_WriteInt(PiezoNr);
 
-            if(ADC[PiezoNr]>200)
+            if(ADC[PiezoNr]>400)
             {
                 if(Sygnal[1]==true)
                 {
@@ -224,7 +226,7 @@ void main(void)
 
                     do {
                          D=(D+w/D)/2;
-                    } while((D*D)-w*(D*D)-w<0.000001);
+                    } while((D*D-w)*(D*D-w)<0.00001);
 
                     r=(-B+D)/(2*A);
 
@@ -236,10 +238,12 @@ void main(void)
 
 
                     //Ausgabe
-                    Str_Printf(x_Display, "x:%05.2f", x);
-                    Str_Printf(y_Display, "y:%05.2f", y);
+                    LCD_ClearLCD();
+
+                    Str_Printf(x_Display, "x:%06.3f", x);
+                    Str_Printf(y_Display, "y:%06.3f", y);
                     LCD_Text(x_Display, y_Display);
-                    Str_Printf(str_Temp, "1:%05.3f  2:%05.3f", b,c);
+                    Str_Printf(str_Temp, "1:%05.1f  2:%05.1f", b,c);
                     I2C_LCD("Zeitdefferenzen:", str_Temp);
 
                     PiezoNr=0;
