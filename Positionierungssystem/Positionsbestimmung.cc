@@ -224,6 +224,9 @@ void main(void)
                     b=10;
                     c=20;
 
+                    x3=x3*-1;
+                    y2=y2*-1;
+
                     BEEPTS(43.6645);
 
                     //Rechnung
@@ -243,7 +246,8 @@ void main(void)
                     x=(2*r*c+(c*c)-(x3*x3))/-2*(x3*x3*x3);
                     y=(2*r*b+(b*b)-(y3*y3))/-2*(y3*y3*y3);
 
-                    Msg_WriteText("\n\nErebnisse:\n");
+                    Msg_WriteText("\n\nErebnisse:");
+                    Msg_WriteChar(13);
                     Msg_WriteText("x=");
                     Msg_WriteFloat(x);
                     Msg_WriteChar(13);
@@ -347,13 +351,13 @@ void Pos_Input(void)
     Input_LCD("x=999,99y=999,99", "????????????");
     //LCD_Text("Input_LCD","Return 1");
     Str_Split(str_Temp, IP_LCD+14, 2);
-    x3=Str_ReadInt(str_Temp)/100;
-    Str_Split(str_Temp, IP_LCD+10, 4);
-    x3=x3+Str_ReadInt(str_Temp);
-    Str_Split(str_Temp, IP_LCD+6, 2);
     y2=Str_ReadInt(str_Temp)/100;
-    Str_Split(str_Temp, IP_LCD+2, 4);
+    Str_Split(str_Temp, IP_LCD+10, 4);
     y2=y2+Str_ReadInt(str_Temp);
+    Str_Split(str_Temp, IP_LCD+6, 2);
+    x3=Str_ReadInt(str_Temp)/100;
+    Str_Split(str_Temp, IP_LCD+2, 4);
+    x3=x3+Str_ReadInt(str_Temp);
     //LCD_Text("Input_LCD","Return 2");
 }
 
