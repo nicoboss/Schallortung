@@ -89,7 +89,7 @@
 
 //Systemstartzeit
 dword millisecs;
-//byte Timer2_IRQ_Counter;
+byte Timer2_IRQ_Counter;
 
 byte Daten, LCD_Buffer, LCD_Param;
 byte I2C_LCD_Beleuchtung;
@@ -173,7 +173,7 @@ void main(void)
 
     Startsound();
 
-    //Irq_SetVect(INT_TIM2COMP,ISR_Systemstartzeit);
+    Irq_SetVect(INT_TIM2COMP,ISR_Systemstartzeit);
 
     byte PiezoNr;
 
@@ -193,7 +193,7 @@ void main(void)
     {
         for(PiezoNr=0;PiezoNr<3;PiezoNr++)
         {
-            millisecs++;
+            //millisecs++;
 
             if(Timer[PiezoNr]!=0)
             {
@@ -221,6 +221,9 @@ void main(void)
                     b=Timer[1];
                     c=Timer[2];
 
+                    b=10;
+                    c=20;
+
                     BEEPTS(43.6645);
 
                     //Rechnung
@@ -240,18 +243,57 @@ void main(void)
                     x=(2*r*c+(c*c)-(x3*x3))/-2*(x3*x3*x3);
                     y=(2*r*b+(b*b)-(y3*y3))/-2*(y3*y3*y3);
 
-                    Msg_WriteChar(13);
-                    Msg_WriteInt(x);
-                    Msg_WriteChar(13);
-
-                    Msg_WriteInt(y);
-                    Msg_WriteChar(13);
+                    Msg_WriteText("\n\nErebnisse:\n");
+                    Msg_WriteText("x=");
+                    Msg_WriteFloat(x);
                     Msg_WriteChar(13);
 
-                    Msg_WriteInt(Timer[1]);
+                    Msg_WriteText("y=");
+                    Msg_WriteFloat(y);
+                    Msg_WriteChar(13);
                     Msg_WriteChar(13);
 
-                    Msg_WriteInt(Timer[2]);
+                    Msg_WriteText("A=");
+                    Msg_WriteFloat(A);
+                    Msg_WriteChar(13);
+
+                    Msg_WriteText("B=");
+                    Msg_WriteFloat(B);
+                    Msg_WriteChar(13);
+
+                    Msg_WriteText("C=");
+                    Msg_WriteFloat(C);
+                    Msg_WriteChar(13);
+
+                    Msg_WriteText("w=");
+                    Msg_WriteFloat(w);
+                    Msg_WriteChar(13);
+
+                    Msg_WriteText("D=");
+                    Msg_WriteFloat(D);
+                    Msg_WriteChar(13);
+
+                    Msg_WriteText("r=");
+                    Msg_WriteFloat(r);
+                    Msg_WriteChar(13);
+
+                    Msg_WriteText("x3=");
+                    Msg_WriteFloat(x3);
+                    Msg_WriteChar(13);
+
+                    Msg_WriteText("y2=");
+                    Msg_WriteFloat(y2);
+                    Msg_WriteChar(13);
+                    Msg_WriteChar(13);
+
+                    Msg_WriteText("Zeitzifferenz 1=");
+                    Msg_WriteFloat(Timer[1]);
+                    Msg_WriteText("ms");
+                    Msg_WriteChar(13);
+
+                    Msg_WriteText("Zeitzifferenz 2=");
+                    Msg_WriteFloat(Timer[2]);
+                    Msg_WriteText("ms");
                     Msg_WriteChar(13);
 
                     //Ausgabe
@@ -260,7 +302,7 @@ void main(void)
                     Str_Printf(x_Display, "x:%06.3f", x);
                     Str_Printf(y_Display, "y:%06.3f", y);
                     LCD_Text(x_Display, y_Display);
-                    Str_Printf(str_Temp, "1:%05.1f  2:%05.1f", Timer[1],Timer[2]);
+                    Str_Printf(str_Temp, "1:%05u  2:%05u", Timer[1],Timer[2]);
                     I2C_LCD("Zeitdefferenzen:", str_Temp);
 
                     PiezoNr=0;
@@ -529,7 +571,7 @@ void BEEP(word Tone, word Periode)
 }
 
 
-/*
+
 void ISR_Systemstartzeit(void)  //Interruptroutine die für die Systemstartzeit verantwordlich ist.
 {
     Timer2_IRQ_Counter++;
@@ -540,7 +582,7 @@ void ISR_Systemstartzeit(void)  //Interruptroutine die für die Systemstartzeit v
     }
 Irq_GetCount(INT_TIM2COMP);
 }
-*/
+
 
 
 byte Input_LCD(char IP_TextT[], char IP_StdW[])
