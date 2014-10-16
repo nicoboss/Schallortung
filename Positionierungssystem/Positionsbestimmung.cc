@@ -119,8 +119,8 @@ word WertGA;
 char str_Temp[17];
 
 //Display
-char x_Display[7];
-char y_Display[7];
+char x_Display[9];
+char y_Display[9];
 
 float x;
 float y;
