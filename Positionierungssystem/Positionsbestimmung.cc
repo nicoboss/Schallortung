@@ -89,7 +89,7 @@
 
 //Systemstartzeit
 dword millisecs;
-byte Timer2_IRQ_Counter;
+//byte Timer2_IRQ_Counter;
 
 byte Daten, LCD_Buffer, LCD_Param;
 byte I2C_LCD_Beleuchtung;
@@ -146,6 +146,8 @@ int Startzeit[7];
 int b;
 int c;
 
+
+
 void main(void)
 {
     float w;
@@ -171,7 +173,7 @@ void main(void)
 
     Startsound();
 
-    Irq_SetVect(INT_TIM2COMP,ISR_Systemstartzeit);
+    //Irq_SetVect(INT_TIM2COMP,ISR_Systemstartzeit);
 
     byte PiezoNr;
 
@@ -191,6 +193,8 @@ void main(void)
     {
         for(PiezoNr=0;PiezoNr<3;PiezoNr++)
         {
+            millisecs++;
+
             if(Timer[PiezoNr]!=0)
             {
                 continue;
@@ -205,8 +209,11 @@ void main(void)
             Msg_WriteInt(ADC[PiezoNr]);
             Msg_WriteChar(13);
             Msg_WriteInt(PiezoNr);
+            Msg_WriteChar(13);
+            Msg_WriteInt(millisecs);
+            Msg_WriteChar(13);
 
-            if(ADC[PiezoNr]>400)
+            if(ADC[PiezoNr]>40)
             {
                 if(Sygnal[1]==true)
                 {
@@ -230,12 +237,22 @@ void main(void)
 
                     r=(-B+D)/(2*A);
 
-                    x=0;
-                    y=0;
-
                     x=(2*r*c+(c*c)-(x3*x3))/-2*(x3*x3*x3);
                     y=(2*r*b+(b*b)-(y3*y3))/-2*(y3*y3*y3);
 
+                    Msg_WriteChar(13);
+                    Msg_WriteInt(x);
+                    Msg_WriteChar(13);
+
+                    Msg_WriteInt(y);
+                    Msg_WriteChar(13);
+                    Msg_WriteChar(13);
+
+                    Msg_WriteInt(Timer[1]);
+                    Msg_WriteChar(13);
+
+                    Msg_WriteInt(Timer[2]);
+                    Msg_WriteChar(13);
 
                     //Ausgabe
                     LCD_ClearLCD();
@@ -243,7 +260,7 @@ void main(void)
                     Str_Printf(x_Display, "x:%06.3f", x);
                     Str_Printf(y_Display, "y:%06.3f", y);
                     LCD_Text(x_Display, y_Display);
-                    Str_Printf(str_Temp, "1:%05.1f  2:%05.1f", b,c);
+                    Str_Printf(str_Temp, "1:%05.1f  2:%05.1f", Timer[1],Timer[2]);
                     I2C_LCD("Zeitdefferenzen:", str_Temp);
 
                     PiezoNr=0;
@@ -512,7 +529,7 @@ void BEEP(word Tone, word Periode)
 }
 
 
-
+/*
 void ISR_Systemstartzeit(void)  //Interruptroutine die für die Systemstartzeit verantwordlich ist.
 {
     Timer2_IRQ_Counter++;
@@ -523,7 +540,7 @@ void ISR_Systemstartzeit(void)  //Interruptroutine die für die Systemstartzeit v
     }
 Irq_GetCount(INT_TIM2COMP);
 }
-
+*/
 
 
 byte Input_LCD(char IP_TextT[], char IP_StdW[])
